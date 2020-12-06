@@ -35,17 +35,29 @@ const isValidPassword = (password, policy) => {
   // Instead of createDictionary check number of times char appears
   const newDictionary = createDictionary(password);
   const valueChar = newDictionary[policyObj.char];
-  if(valueChar >= policyObj.min && valueChar <= policyObj.max){
+  if (valueChar >= policyObj.min && valueChar <= policyObj.max) {
     return true;
   }
   return false;
 }
 
-const countValidPasswords = (passwords) => {
+
+const isValidPassword2 = (password, policy) => {
+  const policyObj = getValuesFromPolicy(policy);
+  // min is position1, max is position2
+  const isEqual1 = password[policyObj.min - 1] === policyObj.char;
+  const isEqual2 = password[policyObj.max - 1] === policyObj.char;
+  if ((isEqual1 || isEqual2) && !(isEqual1 && isEqual2)) {
+    return true;
+  }
+  return false;
+}
+
+const countValidPasswords = (passwords, validation) => {
   let totalValidPass = 0;
-  for (const line of passwords){
+  for (const line of passwords) {
     const [policy, password] = line.split(': ');
-    if(isValidPassword(password, policy)){
+    if (validation(password, policy)) {
       totalValidPass += 1;
     }
   }
@@ -58,9 +70,10 @@ const fsPromises = fs.promises;
 fsPromises.readFile('input.txt', 'utf-8')
   .then((result) => {
     const arrayStrings = result.split('\r\n');
-    // PART 1
-    console.log(countValidPasswords(arrayStrings));
-    //console.log(partTwo(arrayNumbers));
+    // Part 1
+    console.log(countValidPasswords(arrayStrings, isValidPassword));
+    // Part 2
+    console.log(countValidPasswords(arrayStrings, isValidPassword2));
   })
   .catch((error) => {
     console.log(error);
