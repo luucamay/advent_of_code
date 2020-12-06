@@ -16,27 +16,18 @@ const countTrees = (map) => {
   const heightSize = map.length;
   const widthSize = map[0].length;
   let nextStep = 0;
-  const positions = [
-    [0, 1],
-    [0, 1],
-    [0, 1],
-    [1, 0]
-  ]
+  const positionToAdd = [1, 3];
   // while we do not arrive to the bottom keep running!
   let currRow = 0;
   let currCol = 0;
   while (currRow < heightSize - 1) {
-    const positionToAdd = positions[nextStep];
     // review positions
     currRow = currRow + positionToAdd[0];
     currCol = currCol + positionToAdd[1];
-    if (currCol === widthSize) currCol = 0;
-    nextStep = nextStep + 1;
+    if (currCol >= widthSize) currCol = currCol % widthSize;
+    const elementFound = map[currRow][currCol];
     // Count tree only if this was the last step!
-    if (nextStep > 3) {
-      if (map[currRow][currCol] === '#') totalTrees = totalTrees + 1;
-      nextStep = nextStep % 4; // or just reset it to 0
-    }
+    if (elementFound === '#') totalTrees = totalTrees + 1;
   }
   return totalTrees;
 }
@@ -56,7 +47,6 @@ const fsPromises = fs.promises;
 
 fsPromises.readFile('input.txt', 'utf-8')
   .then((result) => {
-    // const otherString = '..##.......\r\n#...#...#..\r\n.#....#..#.\r\n..#.#...#.#\r\n.#...##..#.\r\n..#.##.....\r\n.#.#.#....#\r\n.#........#\r\n#.##...#...\r\n#...##....#\r\n.#..#...#.#';
     newMap = getMap(result);
     // Part 1
     console.log(countTrees(newMap));
