@@ -7,7 +7,8 @@
 ** check if a currentPosition has a tree and then count
 ** goNext position (array of next postition)
 ** calibrate position (if is the bottom, stop going next) (if the end of the row reset to start position)
-**
+* KEY concepts:
+** array.reduce, array of arrays, matrix, string.split
 */
 
 // Count the trees found while following down in the toboggan
@@ -15,8 +16,6 @@ const countTrees = (map, positionToAdd) => {
   let totalTrees = 0;
   const heightSize = map.length;
   const widthSize = map[0].length;
-  let nextStep = 0;
-  // const positionToAdd = [1, 3];
   // while we do not arrive to the bottom keep running!
   let currRow = 0;
   let currCol = 0;
@@ -24,9 +23,9 @@ const countTrees = (map, positionToAdd) => {
     // review positions
     currRow = currRow + positionToAdd[0];
     currCol = currCol + positionToAdd[1];
+    // Important: You use module to calcule how many spaces go to beggining
     if (currCol >= widthSize) currCol = currCol % widthSize;
     const elementFound = map[currRow][currCol];
-    // Count tree only if this was the last step!
     if (elementFound === '#') totalTrees = totalTrees + 1;
   }
   return totalTrees;
@@ -41,6 +40,17 @@ const getMap = (string) => {
   }
   return map;
 }
+const countTreesAllSlopes = (map) => {
+  const answers = []
+  answers[0] = countTrees(map, [1, 1]);
+  answers[1] = countTrees(map, [1, 3]);
+  answers[2] = countTrees(map, [1, 5]);
+  answers[3] = countTrees(map, [1, 7]);
+  answers[4] = countTrees(map, [2, 1]);
+  const reducer = (accumulator, currentValue) => accumulator * currentValue;
+  const multiplication = answers.reduce(reducer);
+  return multiplication;
+}
 
 const fs = require('fs');
 const fsPromises = fs.promises;
@@ -50,15 +60,8 @@ fsPromises.readFile('input.txt', 'utf-8')
     newMap = getMap(result);
     // Part 1
     console.log(countTrees(newMap, [1, 3]));
-    const answers = []
-    answers[0] = countTrees(newMap, [1,1]);
-    answers[1] = countTrees(newMap, [1,3]);
-    answers[2] = countTrees(newMap, [1,5]);
-    answers[3] = countTrees(newMap, [1,7]);
-    answers[4] = countTrees(newMap, [2,1]);
-    console.log(answers[0]*answers[1]*answers[2]*answers[3]*answers[4]);
     // Part 2
-    // console.log(countValidPasswords(arrayStrings, isValidPassword2));
+    console.log(countTreesAllSlopes(newMap));
   })
   .catch((error) => {
     console.log(error);
