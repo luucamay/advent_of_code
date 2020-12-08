@@ -58,6 +58,16 @@ const transformInput = (inputText) => {
   return passportObjList;
 }
 
+// TODO create validation functions for each field!!!
+const validateBirth = (birth) => {
+  if (birth.length !== 4 || isNaN(birth))
+    return false;
+  const year = parseInt(birth);
+  if (year >= 1920 && year <= 2002)
+    return true;
+  return false;
+}
+
 
 const fs = require('fs');
 const fsPromises = fs.promises;
@@ -65,9 +75,9 @@ const fsPromises = fs.promises;
 fsPromises.readFile('input.txt', 'utf-8')
   .then((result) => {
     const passportArray = transformInput(result);
-    const total = countValidPassports(passportArray);
-    console.log(total);
     // Part 1
+    //const total = countValidPassports(passportArray);
+    //console.log(total);
     // Part 2
   })
   .catch((error) => {
