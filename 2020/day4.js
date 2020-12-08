@@ -84,7 +84,14 @@ const validateHeight = (heightField) => {
   return false;
 }
 
-console.log(validateHeight('190'));
+const validateHairColor = (hairColorField) => {
+  const regexp = /#[0-9a-f]+$/;
+  if (hairColorField.length === 7 && regexp.test(hairColorField))
+    return true;
+  return false;
+}
+
+console.log(validateHairColor('123abc'));
 
 const fs = require('fs');
 const fsPromises = fs.promises;
