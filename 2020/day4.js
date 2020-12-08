@@ -59,15 +59,32 @@ const transformInput = (inputText) => {
 }
 
 // TODO create validation functions for each field!!!
-const validateBirth = (birth) => {
-  if (birth.length !== 4 || isNaN(birth))
+// Use this function to validate: birth, issue and expiration
+const validateYear = (yearField, min, max) => {
+  if (yearField.length !== 4 || isNaN(yearField))
     return false;
-  const year = parseInt(birth);
-  if (year >= 1920 && year <= 2002)
+  const year = parseInt(yearField);
+  if (year >= min && year <= max)
     return true;
   return false;
 }
 
+const validateHeight = (heightField) => {
+  if (heightField.length < 2)
+    return false;
+  const endStr = heightField.slice(-2);
+  const height = heightField.slice(0, -2);
+  const heightNumber = parseInt(height);
+
+  if (endStr === 'cm' && heightNumber >= 150 && heightNumber <= 193)
+    return true;
+  if (endStr === 'in' && heightNumber >= 59 && heightNumber <= 76)
+    return true;
+
+  return false;
+}
+
+console.log(validateHeight('190'));
 
 const fs = require('fs');
 const fsPromises = fs.promises;
