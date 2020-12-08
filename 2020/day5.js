@@ -40,7 +40,15 @@ const getID = (boardingPassStr) => {
   return id;
 }
 
-console.log(getID('FBFBBFFRLR'));
+const getHighestSeatID = (boardingPassArray) => {
+  let max = -1;
+  for (const boardingPass of boardingPassArray) {
+    const id = getID(boardingPass);
+    if (max < id)
+      max = id;
+  }
+  return max;
+}
 
 const fs = require('fs');
 const fsPromises = fs.promises;
@@ -48,8 +56,9 @@ const fsPromises = fs.promises;
 fsPromises.readFile('input.txt', 'utf-8')
   .then((result) => {
     const boardingPassList = transformInput(result);
-    //console.log(boardingPassList);
     // Part 1
+    const highestSeatID = getHighestSeatID(boardingPassList);
+    console.log({highestSeatID});
     // Part 2
 
   })
