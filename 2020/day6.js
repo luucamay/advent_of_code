@@ -13,7 +13,16 @@ const countQuestionsAnswered = (groupAnswers) => {
     if (char !== '\r' && char !== '\n')
       answeredQuestions.add(char);
   }
-  return answeredQuestions;
+  return answeredQuestions.size;
+}
+
+const totalQuestionsAnswered = (answerList) => {
+  let total = 0;
+  for (const groupAnswers of answerList) {
+    const count = countQuestionsAnswered(groupAnswers);
+    total += count;
+  }
+  return total;
 }
 
 const fs = require('fs');
@@ -22,10 +31,9 @@ const fsPromises = fs.promises;
 fsPromises.readFile('input.txt', 'utf-8')
   .then((result) => {
     const answers = transformInput(result);
-    console.log(countQuestionsAnswered(answers[0]));
-
-    //console.log(answers);
     // Part 1
+    console.log(totalQuestionsAnswered(answers));
+
     // Part 2
   })
   .catch((error) => {
