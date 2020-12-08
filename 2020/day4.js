@@ -91,7 +91,14 @@ const validateHairColor = (hairColorField) => {
   return false;
 }
 
-console.log(validateHairColor('123abc'));
+const validateEyeColor = (eyeColor) => {
+  const validValues = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'];
+  if (validValues.includes(eyeColor))
+    return true;
+  return false;
+}
+
+console.log(validateEyeColor('wat'));
 
 const fs = require('fs');
 const fsPromises = fs.promises;
