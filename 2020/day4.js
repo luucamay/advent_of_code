@@ -98,7 +98,11 @@ const validateEyeColor = (eyeColor) => {
   return false;
 }
 
-console.log(validateEyeColor('wat'));
+const validatePassportID = (passportID) => {
+  if (passportID.length !== 9 || isNaN(passportID))
+    return false;
+  return true;
+}
 
 const fs = require('fs');
 const fsPromises = fs.promises;
