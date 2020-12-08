@@ -31,10 +31,10 @@ const isValidPassport = (passport) => {
   return false;
 }
 
-const countValidPassports = (passportList) => {
+const countValidPassports = (passportList, isValid) => {
   let totalValid = 0;
   for (passportObj of passportList) {
-    if (isValidPassport(passportObj))
+    if (isValid(passportObj))
       totalValid++;
   }
   return totalValid;
@@ -104,6 +104,35 @@ const validatePassportID = (passportID) => {
   return true;
 }
 
+const isValidPassport2 = (passport) => {
+  // check fields
+  const fields = [
+    'byr',
+    'iyr',
+    'eyr',
+    'hgt',
+    'hcl',
+    'ecl',
+    'pid',
+    'cid'
+  ];
+  if (!(fields[0] in passport && validateYear(passport[fields[0]], 1920, 2002)))
+    return false;
+  if (!(fields[1] in passport && validateYear(passport[fields[1]], 2010, 2020)))
+    return false;
+  if (!(fields[2] in passport && validateYear(passport[fields[2]], 2020, 2030)))
+    return false;
+  if (!(fields[3] in passport && validateHeight(passport[fields[3]])))
+    return false;
+  if (!(fields[4] in passport && validateHairColor(passport[fields[4]])))
+    return false;
+  if (!(fields[5] in passport && validateEyeColor(passport[fields[5]])))
+    return false;
+  if (!(fields[6] in passport && validatePassportID(passport[fields[6]])))
+    return false;
+  return true;
+}
+
 const fs = require('fs');
 const fsPromises = fs.promises;
 
@@ -111,9 +140,11 @@ fsPromises.readFile('input.txt', 'utf-8')
   .then((result) => {
     const passportArray = transformInput(result);
     // Part 1
-    //const total = countValidPassports(passportArray);
-    //console.log(total);
+    const total = countValidPassports(passportArray, isValidPassport);
+    console.log(total);
     // Part 2
+    const total2 = countValidPassports(passportArray, isValidPassport2);
+    console.log(total2);
   })
   .catch((error) => {
     console.log(error);
