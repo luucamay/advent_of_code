@@ -2,7 +2,11 @@
 * Main goal: Get 50 statusbar
 * Today goal: Find the highest set ID on a boarding pass
 * How part 1:
-**
+** Count number of questions answered by group
+** Add the number of questions answered by group
+** Divide the input by blank line
+* How part 2:
+** DTraverse first line and check the rest of the list
 */
 
 const transformInput = (string) => string.split('\r\n\r\n');
