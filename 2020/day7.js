@@ -9,6 +9,15 @@
 *** check column of next element in queue and add not visited nodes
 *** until q is empty count everythin that is added to queue
 *** maybe visited is the one who in reality has al  the parents
+* How part 2: Count how many bags fit inside a shiny gold bag
+** create array of dependencies in a matrix
+** find children and add weights
+*** start at row for shyny gold
+*** add to queue the node
+*** while there is nodes at queue keep checking if there are nodes there
+*** if you find a node add the value to queue and add to total multiplied by currParentNodeWeigh
+*** use parentweight to add
+*** remove from queue and the current first node
 */
 const buildAdjacencyMatrix = (rulesList, nodes, totalNodes) => {
   const adjMatrix = [];
@@ -67,6 +76,29 @@ const findTotalBags = (adjacencyMatrix, nodes, totalNodes) => {
   return visited.size - 1;
 }
 
+const countBagsInsideBag = (bag, adjacencyMatrix, nodes, totalNodes) => {
+  let totalBags = 0;
+  let currNode = nodes[bag];
+  const queue = [];
+  const weights = [];
+  weights.push(1);
+  queue.push(currNode);
+  while (queue.length > 0) {
+    currNode = queue.shift();
+    currWeight = weights.shift();
+    for (let node = 0; node < totalNodes; node++) {
+      const weight = adjacencyMatrix[currNode][node];
+      if (weight) {
+        const totalWeight = weight * currWeight
+        totalBags = totalBags + totalWeight;
+        queue.push(node);
+        weights.push(totalWeight);
+      }
+    }
+  }
+  return totalBags;
+}
+
 const fs = require('fs');
 const fsPromises = fs.promises;
 
@@ -78,9 +110,10 @@ fsPromises.readFile('input.txt', 'utf-8')
     // console.table(graphMatrix);
     // Part 1
     const totalBags = findTotalBags(graphMatrix, nodes, totalNodes);
-    console.log({totalBags});
+    console.log({ totalBags });
     // Part 2
-
+    const totalBagsInside = countBagsInsideBag('shiny gold', graphMatrix, nodes, totalNodes);
+    console.log({ totalBagsInside });
   })
   .catch((error) => {
     console.log(error);
