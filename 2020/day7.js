@@ -10,9 +10,7 @@
 *** until q is empty count everythin that is added to queue
 *** maybe visited is the one who in reality has al  the parents
 */
-const buildAdjacencyMatrix = (string) => {
-  const rulesList = string.split('\r\n');
-  const [nodes, totalNodes] = getNodeList(rulesList);
+const buildAdjacencyMatrix = (rulesList, nodes, totalNodes) => {
   const adjMatrix = [];
   for (const rule of rulesList) {
     const emptyArr = new Array(totalNodes).fill(0);
@@ -32,7 +30,7 @@ const buildAdjacencyMatrix = (string) => {
       adjMatrix[row][col] = parseInt(weight);
     }
   }
-  console.table(adjMatrix);
+  return adjMatrix;
 }
 
 const getNodeList = (rules) => {
@@ -46,13 +44,41 @@ const getNodeList = (rules) => {
   return [nodes, i];
 }
 
+// findTotalBags is a function that counts all the nodes that are parents to one node
+const findTotalBags = (adjacencyMatrix, nodes, totalNodes) => {
+  // start current node with the node that is at shinygold
+  let currNode = nodes['shiny gold'];
+  const visited = new Set();
+  const queue = [];
+  queue.push(currNode);
+  while (queue.length > 0) {
+    currNode = queue.shift();
+
+    if (visited.has(currNode))
+      continue;
+    for (let i = 0; i < totalNodes; i++) {
+      const weight = adjacencyMatrix[i][currNode];
+      if (weight)
+        queue.push(i);
+    }
+    visited.add(currNode);
+  }
+  // console.log(visited);
+  return visited.size - 1;
+}
+
 const fs = require('fs');
 const fsPromises = fs.promises;
 
 fsPromises.readFile('input.txt', 'utf-8')
   .then((result) => {
-    const graphMatrix = buildAdjacencyMatrix(result);
+    const rulesList = result.split('\r\n');
+    const [nodes, totalNodes] = getNodeList(rulesList);
+    const graphMatrix = buildAdjacencyMatrix(rulesList, nodes, totalNodes);
+    // console.table(graphMatrix);
     // Part 1
+    const totalBags = findTotalBags(graphMatrix, nodes, totalNodes);
+    console.log({totalBags});
     // Part 2
 
   })
