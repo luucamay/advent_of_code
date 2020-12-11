@@ -30,6 +30,27 @@ const valid = (number, numbers, preamble, pos) => {
   return false;
 }
 
+// How I built this: https://www.geeksforgeeks.org/find-subarray-with-given-sum/
+const subArraySum = (arr, sum) => {
+  let n = arr.length;
+  let currSum = arr[0];
+  let start = 0;
+  let end = 1;
+  while (end < n) {
+    while (currSum > sum && start < end - 1) {
+      currSum = currSum - arr[start]
+      start += 1
+    }
+
+    if (currSum == sum)
+      return arr.slice(start, end);
+
+    currSum = currSum + arr[end];
+    end += 1;
+
+  }
+}
+
 const fs = require('fs');
 const fsPromises = fs.promises;
 
@@ -40,6 +61,10 @@ fsPromises.readFile('input.txt', 'utf-8')
     const notValidNumber = findNotValidNumber(numberList, 25);
     console.log({ notValidNumber });
     // Part 2
+    const sumSet = subArraySum(numberList, notValidNumber);
+    const min = Math.min(...sumSet);
+    const max = Math.max(...sumSet);
+    console.log(min + max);
   })
   .catch((error) => {
     console.log(error);
