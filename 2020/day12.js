@@ -18,3 +18,15 @@
 
 const rotate = (string) => string.slice(1) + string[0];
 const rotateInverse = (string) => string.slice(-1) + string.slice(0, 3);
+
+const changeDirection = (directions, instruction, value) => {
+  const numTimes = value / 90;
+  const rotateFunction = instruction === 'R' ? rotate : rotateInverse;
+  for (let t = 0; t < numTimes; t++) {
+    directions = rotateFunction(directions);
+  }
+  console.log(directions);
+  return directions;
+}
+
+changeDirection('ESWN', 'L', 90)
