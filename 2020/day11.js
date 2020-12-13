@@ -16,11 +16,11 @@ const checkValid = (seats, row, col) => {
   return true;
 }
 
-const isOccupied = (seats, row, col, rowdiff, coldiff) => {
+const isOccupied = (seats, row, col, rowdiff, coldiff, part1) => {
   row += rowdiff;
   col += coldiff;
   if (!checkValid(seats, row, col)) return false;
-  while (seats[row][col] === '.') {
+  while (seats[row][col] === '.' && !part1) {
     row += rowdiff;
     col += coldiff;
     if (!checkValid(seats, row, col)) return false;
@@ -36,7 +36,7 @@ const countOccupied = (seats, row, col) => {
   for (const i of moves) {
     for (const j of moves) {
       if (i !== 0 || j !== 0)
-        if (isOccupied(seats, row, col, i, j))
+        if (isOccupied(seats, row, col, i, j, true))
           count += 1;
     }
   }
@@ -65,7 +65,8 @@ const simulateChanges = (seats) => {
           if (seat === 'L' && occupied === 0) {
             newLine += '#';
             numChanges += 1;
-          } else if (seat === '#' && occupied >= 5) {
+          } // change next condition to occupied >= 5 for part 2
+          else if (seat === '#' && occupied >= 4) {
             newLine += 'L';
             numChanges += 1;
           } else newLine += seat;
