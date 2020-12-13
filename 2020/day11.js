@@ -9,77 +9,78 @@
 ** until there is no changes in a complete travesre
 */
 
-const changeSeat = (char, lineSeats, row, col, sizeRow, sizeCol) => {
-  // only check in horizontal line
-  // cound how many l's and #'s are
-  let countOccupied = 0;
-  const startCol = col - 1;
-  const endCol = col + 1;
-  const startRow = row - 1;
-  const endRow = row + 1;
-  let currRow = startRow >= 0 ? startRow : 0;
-  // are there other 'L' around?
-  while (currRow < sizeRow && currRow < endRow + 1) {
-    let currCol = startCol >= 0 ? startCol : 0;
-    while (currCol < sizeCol && currCol <= endCol) {
-      // skip index equal to curr column
-      if (currCol === col && currRow === row) {
-        currCol += 1;
-        continue;
-      }
-
-      let currChar = lineSeats[currRow][currCol];
-      if (currChar === '#')
-        countOccupied += 1;
-      currCol += 1;
-    }
-    currRow += 1;
-  }
-  if (char === '.')
-    return false;
-  if (char === 'L') {
-    if (countOccupied === 0) return true;
-    return false;
-  }
-  if (char === '#') {
-    if (countOccupied >= 4) return true;
-    return false;
-  }
+const checkValid = (seats, row, col) => {
+  if (row < 0 || col < 0) return false;
+  if (row >= seats.length) return false;
+  if (col >= seats[0].length) return false;
+  return true;
 }
 
-const changeStatus = (status) => status === 'L' ? '#' : 'L';
+const isOccupied = (seats, row, col, rowdiff, coldiff) => {
+  row += rowdiff;
+  col += coldiff;
+  if (!checkValid(seats, row, col)) return false;
+  while (seats[row][col] === '.') {
+    row += rowdiff;
+    col += coldiff;
+    if (!checkValid(seats, row, col)) return false;
+  }
+  if (seats[row][col] === '#')
+    return true;
+  return false;
+}
+
+const countOccupied = (seats, row, col) => {
+  let count = 0;
+  const moves = [0, 1, -1];
+  for (const i of moves) {
+    for (const j of moves) {
+      if (i !== 0 || j !== 0)
+        if (isOccupied(seats, row, col, i, j))
+          count += 1;
+    }
+  }
+  return count;
+}
 
 const simulateChanges = (seats) => {
+  seats = seats.map((line) => line.replace(/L/g, '#'));
+  let newSeats = [];
   const sizeRow = seats.length;
   const sizeCol = seats[0].length;
-  let newInput = [];
   // when number of changes is 0 stop trying to change the seats;
   let numChanges = 1;
+  let total = 0;
   while (numChanges > 0) {
+    total += 1;
     numChanges = 0;
-    newInput = [];
+    newSeats = [];
     for (let row = 0; row < sizeRow; row++) {
       let newLine = '';
       for (let col = 0; col < sizeCol; col++) {
         const seat = seats[row][col];
-        change = changeSeat(seat, seats, row, col, sizeRow, sizeCol);
-        if (change) {
-          numChanges += 1;
-          newLine += changeStatus(seat);
-        } else {
-          newLine += seat;
-        }
+        if (seat !== '.') {
+          const occupied = countOccupied(seats, row, col);
+          // console.log({occupied, row, col, seat});
+          if (seat === 'L' && occupied === 0) {
+            newLine += '#';
+            numChanges += 1;
+          } else if (seat === '#' && occupied >= 5) {
+            newLine += 'L';
+            numChanges += 1;
+          } else newLine += seat;
+        } else newLine += seat;
       }
-      newInput.push(newLine);
+      newSeats.push(newLine);
     }
-    seats = newInput;
+    seats = newSeats;
   }
-  return newInput;
+  return newSeats;
 }
 
 const transformInput = (input) => input.split('\r\n');
 
-const countOccupied = (seats) => {
+const countOccupiedFinal = (seats) => {
   let totalOccupied = 0;
   for (const line of seats) {
     for (let pos = 0; pos <= line.length; pos++) {
@@ -97,10 +98,10 @@ fsPromises.readFile('input.txt', 'utf-8')
   .then((result) => {
     const seatList = transformInput(result);
     // Part 1
-    const seatsSimulated = simulateChanges(seatList);
-    const total = countOccupied(seatsSimulated);
-    console.log({ total });
     // Part 2
+    const seatsSimulated = simulateChanges(seatList);
+    const total = countOccupiedFinal(seatsSimulated);
+    console.log({ total });
   })
   .catch((error) => {
     console.log(error);
