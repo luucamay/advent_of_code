@@ -14,33 +14,6 @@
 * Resource about bits => https://realpython.com/python-bitwise-operators/#bitmasks
 */
 
-const clearBit = (value, bitIndex) => value & ~(1 << bitIndex);
-const setBit = (value, bitIndex) => value | (1 << bitIndex);
-
-const createPairsMask = (mask) => {
-  const pairs = [];
-  let index = 0;
-  for (let j = mask.length - 1; j >= 0; j--) {
-    const char = mask[j];
-    if (char !== 'X')
-      pairs.push([parseInt(char), index])
-    index++;
-  }
-  console.log({ pairs });
-  return pairs;
-}
-
-const maskedVal = (val, bitList) => {
-  for (const item of bitList) {
-    const [bit, bitIndex] = item;
-    if (bit === 0)
-      val = clearBit(val, bitIndex);
-    else
-      val = setBit(val, bitIndex);
-  }
-  return val;
-}
-
 const transformInput = (input) => {
   const lines = input.split('\r\n');
   const keyValues = lines.map((line) => line.split(' = '));
@@ -48,40 +21,33 @@ const transformInput = (input) => {
 }
 
 const sumValsMemory = (memory) => {
-  let sum = 0;
+  let sum = BigInt(0);
   for (const val in memory) {
     sum += memory[val];
   }
   console.log({ sum });
-  return sum
+  return sum;
 }
 
 const getSumAllValues = (keyVals) => {
-  const size = keyVals.length;
   const memory = {};
-  let i = 0;
-  while (i < size) {
-    const [mask, maskValue] = keyVals[i];
-    const bitList = createPairsMask(maskValue);
-    if (mask === 'mask') {
-      let j = i + 1;
-      let key = keyVals[j][0];
-      while (j < keyVals.length && key !== 'mask') {
-        const currVal = keyVals[j][1];
-        key = keyVals[j][0];
-        let mem = key.replace(/mem/gi, '');
-        mem = mem.slice(1, mem.length - 1);
-
-        const newVal = maskedVal(currVal, bitList);
-        memory[mem] = newVal;
-
-        j++;
-      }
-      i = j;
+  let mask;
+  for (const line of keyVals) {
+    let [key, value] = line;
+    if (key === 'mask') {
+      mask = value;
+      console.log({ mask });
+    } else {
+      const address = key.slice(4, key.length - 1);
+      value = BigInt(parseInt(value));
+      const changeToCeros = BigInt(parseInt(mask.replace(/1/gi, '0').replace(/X/gi, '1'), 2));
+      const changeToOnes = BigInt(parseInt(mask.replace(/X/gi, '0'), 2));
+      // console.log({ value, changeToCeros, changeToOnes });
+      memory[address] = value & changeToCeros | changeToOnes;
+      console.log('new value: ',memory[address]);
     }
-    i++;
   }
-  console.log(memory);
+  //console.log(memory);
   return sumValsMemory(memory);
 }
 
