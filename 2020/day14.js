@@ -14,6 +14,33 @@
 * Resource about bits => https://realpython.com/python-bitwise-operators/#bitmasks
 */
 
+const clearBit = (value, bitIndex) => value & ~(1 << bitIndex);
+const setBit = (value, bitIndex) => value | (1 << bitIndex);
+
+const createPairsMask = (mask) => {
+  const pairs = [];
+  let index = 0;
+  for (let j = mask.length - 1; j >= 0; j--) {
+    const char = mask[j];
+    if (char !== 'X')
+      pairs.push([parseInt(char), index])
+    index++;
+  }
+  console.log({ pairs });
+  return pairs;
+}
+
+const maskedVal = (val, bitList) => {
+  for (const item of bitList) {
+    const [bit, bitIndex] = item;
+    if (bit === 0)
+      val = clearBit(val, bitIndex);
+    else
+      val = setBit(val, bitIndex);
+  }
+  return val;
+}
+
 const transformInput = (input) => {
   const lines = input.split('\r\n');
   const keyValues = lines.map((line) => line.split(' = '));
@@ -30,19 +57,29 @@ const sumValsMemory = (memory) => {
 }
 
 const getSumAllValues = (keyVals) => {
+  const size = keyVals.length;
   const memory = {};
-  let mask;
-  for (const line of keyVals) {
-    let [key, value] = line;
-    if (key === 'mask') {
-      mask = value;
-    } else {
-      const address = key.slice(5, key.length - 1);
-      value = parseInt(value);
-      memory[address] = value
-        & parseInt(mask.replace(/1/gi, '0').replace(/X/gi, '1'), 2)
-        | parseInt(mask.replace(/X/gi, '0'), 2);
+  let i = 0;
+  while (i < size) {
+    const [mask, maskValue] = keyVals[i];
+    const bitList = createPairsMask(maskValue);
+    if (mask === 'mask') {
+      let j = i + 1;
+      let key = keyVals[j][0];
+      while (j < keyVals.length && key !== 'mask') {
+        const currVal = keyVals[j][1];
+        key = keyVals[j][0];
+        let mem = key.replace(/mem/gi, '');
+        mem = mem.slice(1, mem.length - 1);
+
+        const newVal = maskedVal(currVal, bitList);
+        memory[mem] = newVal;
+
+        j++;
+      }
+      i = j;
     }
+    i++;
   }
   console.log(memory);
   return sumValsMemory(memory);
