@@ -3,7 +3,6 @@
 * Today goal: Decode the docked data
 * How part 1: Get the sum of all values written in memory
 ** get the masks and the writes to memory
-** convert each value to be saved to binary
 ** create the list of pairs with bit and bitIndex for mask
 ** replace 1's and 0's from the mask with clearBit and setBit
 ** start at the end of the list to only write if there is nothing written in memory
@@ -31,4 +30,30 @@ const createPairsMask = (mask) => {
   return pairs;
 }
 
-createPairsMask('XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X');
+const maskedVal = (val, bitList) => {
+  for (const item of bitList) {
+    const [bit, bitIndex] = item;
+    if (bit === 0)
+      val = clearBit(val, bitIndex);
+    else
+      val = setBit(val, bitIndex);
+  }
+  return val;
+}
+
+const writeValues = (mask, writes) => {
+  const bitList = createPairsMask(mask);
+  const memory = {};
+  for (let i = writes.length - 1; i >= 0; i--) {
+    const [memPos, value] = writes[i];
+    if (!(memPos in memory)) {
+      newVal = maskedVal(value, bitList);
+      memory[memPos] = newVal;
+    }
+  }
+  console.log({memory});
+}
+
+let mask = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X';
+let writes = [[8, 11], [7, 101], [8, 0]]
+writeValues(mask, writes);
