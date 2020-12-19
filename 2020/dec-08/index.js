@@ -1,5 +1,6 @@
 /*
 * Main goal: Get 50 statusbar
+* Title: Handheld Halting
 * Today goal: Repair game console of kid
 * How part 1: Find value of accumulator befor the program repeats an instruction
 ** create array of instructions

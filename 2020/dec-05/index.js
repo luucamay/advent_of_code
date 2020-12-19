@@ -1,5 +1,6 @@
 /*
 * Main goal: Get 50 statusbar
+* Binary Boarding
 * Today goal: Find the highest set ID on a boarding pass
 * How part 1:
 ** open the input file

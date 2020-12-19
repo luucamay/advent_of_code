@@ -1,5 +1,6 @@
 /*
 * Main goal: Get 50 stars
+* Title: Adapter Array
 * Today goal: Charge the battery of your device
 * How part 1: Find the number of 1 jolt difference and the number of 3 jolts difference multiplied
 ** split input by line and convert to number

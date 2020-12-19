@@ -1,6 +1,7 @@
 /*
 * Main goal: Get 50 statusbar
-* Today goal: Count how many bags can contain a
+* Title: Handy Haversacks
+* Today goal: Count how many bags can contain a shiny gold bag
 * How part 1:
 ** create array of dependencies in a matrix
 ** find parents/ review columns+

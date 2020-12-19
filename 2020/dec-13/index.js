@@ -1,5 +1,6 @@
 /*
 * Main goal: Get 50 stars
+* Title: Shuttle Search
 * Today goal: Find the earliest bus you can take
 * How part 1:
 ** split input by line and by ' ,'

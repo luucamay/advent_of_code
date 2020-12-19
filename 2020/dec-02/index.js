@@ -1,5 +1,6 @@
 /*
 * Main goal: Get 50 statusbar
+* Title: Password Philosophy
 * Today goal: Count valid passwords
 * How:
 ** Create a dictionary from passwords

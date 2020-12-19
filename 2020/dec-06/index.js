@@ -1,6 +1,7 @@
 /*
 * Main goal: Get 50 statusbar
-* Today goal: Find the highest set ID on a boarding pass
+* Title: Custom Customs
+* Today goal: Sum of questions answered by group
 * How part 1:
 ** Count number of questions answered by group
 ** Add the number of questions answered by group

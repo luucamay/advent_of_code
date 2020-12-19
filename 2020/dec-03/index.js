@@ -1,5 +1,6 @@
 /*
 * Main goal: Get 50 statusbar
+* Title: Toboggan Trajectory
 * Today goal: Count trees found while folling down in the Toboggan
 * How:
 ** Use a map line by line

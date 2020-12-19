@@ -1,5 +1,6 @@
 /*
 * Main goal: Get 50 stars
+* Title: Seating System
 * Today goal: Predict the best place to sit
 * How part 1: Find how many seats are occupied
 ** split input by line to get array of lines

@@ -1,5 +1,6 @@
 /*
 * Main goal: Get 50 stars
+* Title: Rambunctious Recitation
 * Today goal: Find the 2020th number said
 * How part 1:
 ** Loop for the input first (use a global index)

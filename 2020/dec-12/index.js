@@ -1,5 +1,6 @@
 /*
 * Main goal: Get 50 stars
+* Title: Rain Risk
 * Today goal: Understand the ship navigation system
 * How part 1: Get final coords of ship and multiply them
 ** split input by line to get array of instructions

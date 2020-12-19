@@ -1,5 +1,6 @@
 /*
 * Main goal: Get 50 stars
+* Title: Encoding Error
 * Today goal: Atack the weakness of XMAS encrypted data
 * How part 1: Find the first not valid number
 ** split the input by line
