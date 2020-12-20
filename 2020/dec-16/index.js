@@ -12,21 +12,37 @@
 *** else add the number to a list of invalid numbers
 */
 
-const isValid = (number, rules) => {
-  for (const rule of rules) {
-    const [min, max] = rule;
-    if (number >= min && number <= max)
-      return true;
+const isValid = (number, ranges) => {
+  for (const line of ranges) {
+    for (const range of line) {
+      const [min, max] = range;
+      if (number >= min && number <= max)
+        return true;
+    }
   }
   return false;
 }
 
-const findInvalidValues = (numbers, rules) => {
+const findInvalidValues = (ticketsVals, ranges) => {
   const invalidValues = [];
-  for (const number of numbers) {
-    if (!isValid(number))
-      invalidValues.push(number);
+  for (const valuesTicket of ticketsVals) {
+    for (const val of valuesTicket) {
+      if (!isValid(val, ranges))
+        invalidValues.push(val);
+    }
   }
+  return invalidValues;
+}
+
+const getSumInvalid = (input) => {
+  const [rules, , values] = input;
+  // get ranges
+  const ranges = rules.map(rule => rule.ranges);
+  const invalidVals = findInvalidValues(values, ranges);
+  const reducer = (accumulator, currentVal) => accumulator + currentVal;
+  const sum = invalidVals.reduce(reducer);
+  console.log({ sum });
+  return sum;
 }
 
 const processInput = (input) => {
@@ -56,6 +72,7 @@ const processInput = (input) => {
     values = values.map(val => parseInt(val));
     valuesOtherTickets.push(values);
   }
+  return [ruleList, yourTicketNums, valuesOtherTickets];
 }
 
 const fs = require('fs');
@@ -64,6 +81,7 @@ const fsPromises = fs.promises;
 fsPromises.readFile('input.txt', 'utf-8')
   .then((result) => {
     const input = processInput(result);
+    getSumInvalid(input);
   })
   .catch((error) => {
     console.log(error);
