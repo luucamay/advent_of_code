@@ -10,6 +10,18 @@
 ** Find invalid values
 *** if a number is valid through all the rules skip
 *** else add the number to a list of invalid numbers
+* How part 2: Get multiplication of your ticket fields that start with departure
+** Determine the order of the fields
+*** Inititalize an array of objects
+**** each object has an array of all the fields start in 0 and a counter of posible fields.
+**** 0 means a not possible field
+**** 1 means a possible field
+*** Traverse the list of the tickets
+*** for each value on each ticket
+**** if posible field check 1 at field position and increase counter
+*** check if counter at end of each field is only 1
+**** then set 0 to other objects list in that position (how to get that position -> indexof(1) )
+*** if all counters are at 1 stop
 */
 
 const isValid = (number, ranges) => {
