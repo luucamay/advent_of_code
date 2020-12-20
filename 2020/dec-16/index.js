@@ -24,6 +24,29 @@
 *** if all counters are at 1 stop
 */
 
+const inRange = (val, range) => {
+  const [min, max] = range;
+  if (val >= min && val <= max)
+    return true;
+  return false;
+}
+const getPosibleFieldsForValue = (val, rules) => {
+  const rulesSize = rules.length;
+  const listValidFields = new Array(rulesSize).fill(1);
+  let counter = rulesSize;
+  for (let i = 0; i < rulesSize; i++) {
+    const { field, ranges } = rules[i];
+    console.log({ field, ranges });
+    const [range1, range2] = ranges;
+    if (!(inRange(val, range1) || inRange(val, range2))) {
+      listValidFields[i] = 0;
+      counter -= 1;
+    }
+  }
+  console.log({ listValidFields, counter });
+  return { listValidFields, counter };
+}
+
 const isValid = (number, ranges) => {
   for (const line of ranges) {
     for (const range of line) {
@@ -93,7 +116,11 @@ const fsPromises = fs.promises;
 fsPromises.readFile('input.txt', 'utf-8')
   .then((result) => {
     const input = processInput(result);
-    getSumInvalid(input);
+    const [rules, yourVals, values] = input;
+    // Part 1
+    // getSumInvalid(input);
+    // Part 2
+    getPosibleFieldsForValue(15, rules);
   })
   .catch((error) => {
     console.log(error);
