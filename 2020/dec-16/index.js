@@ -21,7 +21,10 @@
 **** if posible field check 1 at field position and increase counter
 *** check if counter at end of each field is only 1
 **** then set 0 to other objects list in that position (how to get that position -> indexof(1) )
-*** if all counters are at 1 stop
+*** if all counters are at 1 stop???
+*** now you have a list of lists where each position of field, and the position of 1 on the list inside is the field
+*** map the 1 in the list to a fild name
+*** do not forget to remove invalid fields
 */
 
 const inRange = (val, range) => {
@@ -30,23 +33,107 @@ const inRange = (val, range) => {
     return true;
   return false;
 }
-const getPosibleFieldsForValue = (val, rules) => {
-  const rulesSize = rules.length;
-  const listValidFields = new Array(rulesSize).fill(1);
-  let counter = rulesSize;
+const getPosibleFieldsForValue = (val, rulesSize, rules, listValidFields) => {
+  if (!listValidFields) listValidFields = new Array(rulesSize).fill(1);
+  // console.log({ listValidFields, val });
   for (let i = 0; i < rulesSize; i++) {
+    if (listValidFields[i] === 0) continue;
     const { field, ranges } = rules[i];
-    console.log({ field, ranges });
+    // console.log({ field, ranges });
     const [range1, range2] = ranges;
-    if (!(inRange(val, range1) || inRange(val, range2))) {
+    if (!(inRange(val, range1) || inRange(val, range2)))
       listValidFields[i] = 0;
-      counter -= 1;
-    }
   }
-  console.log({ listValidFields, counter });
-  return { listValidFields, counter };
+  //console.log({ listValidFields });
+  return listValidFields;
 }
 
+const orderFields = (ticketsVals, rules) => {
+  const totalTickets = ticketsVals.length;
+  const totalFields = rules.length;
+  let posibleFields = new Array(totalFields);
+  for (let row = 0; row < totalFields; row++) {
+    posibleFields[row] = new Array(totalFields).fill(1);
+  }
+  const ignoreField = new Set();
+  for (let i = 0; i < totalTickets; i++) {
+    const currTicketVals = ticketsVals[i];
+    const newPosibleFields = new Array(totalFields).fill(1);
+    let validTicket = true;
+    // if all values in current ticket are valid use it, otherwise discard them
+    for (let j = 0; j < totalFields; j++) {
+      const value = currTicketVals[j];
+      const currValidFields = [...posibleFields[j]];
+      //if (ignoreField.has(j)) continue;
+      const newValidFields = getPosibleFieldsForValue(value, totalFields, rules, currValidFields);
+      // console.log({ newValidFields });
+      // count 1's on list and get final position
+      let count = 0;
+      let lastSeen = -1;
+      for (let k = 0; k < totalFields; k++) {
+        if (newValidFields[k] === 1) {
+          count += 1;
+          lastSeen = k;
+        }
+      }
+      // if field is not valid for none of them skip all the ticket
+      if (count === 0) {
+        validTicket = false;
+        break;
+      } else {
+        newPosibleFields[j] = newValidFields;
+      }
+      // console.log({ value, newValidFields });
+
+      // if only 1 remove this posibility from other fields
+      // and add to ignore this field?
+      if (count === 1) {
+        console.log('remove from others');
+        // console.log({ lastSeen });
+        //ignoreField.add(j);
+        for (let z = 0; z < totalFields; z++) {
+          //if (ignoreField.has(z)) continue;
+          if (z !== j){
+            console.log('cero', z);
+            newPosibleFields[z][lastSeen] = 0;
+          }
+        }
+      }
+    }
+    if (validTicket) {
+      posibleFields = [...newPosibleFields];
+      console.log({ newPosibleFields, posibleFields });
+      console.log('----------');
+    }
+  }
+  // console.log({ posibleFields });
+  /* const sortedFields = mapFieldListToName(posibleFields, rules);
+  console.log({ sortedFields });
+  return sortedFields; */
+}
+
+const mapFieldListToName = (posibleFields, rules) => {
+  // console.log({ rules, posibleFields });
+  const orderOfFields = [];
+  for (const list of posibleFields) {
+    const postion = list.indexOf(1);
+    const nameField = rules[postion].field;
+    orderOfFields.push(nameField);
+  }
+  return orderOfFields;
+}
+
+const multiplyFields = (sortedFields, yourValues, fieldFilter) => {
+  let mul = 1;
+  for (let i = 0; i < sortedFields.length; i++) {
+    const field = sortedFields[i];
+    if (field.startsWith(fieldFilter)) {
+      mul *= yourValues[i];
+    }
+  }
+  console.log({ mul });
+  return mul;
+}
 const isValid = (number, ranges) => {
   for (const line of ranges) {
     for (const range of line) {
@@ -120,7 +207,9 @@ fsPromises.readFile('input.txt', 'utf-8')
     // Part 1
     // getSumInvalid(input);
     // Part 2
-    getPosibleFieldsForValue(15, rules);
+    //getPosibleFieldsForValue(3, 3, rules);
+    const sortedFields = orderFields(values, rules);
+    //multiplyFields(sortedFields, yourVals, 'departure');
   })
   .catch((error) => {
     console.log(error);
