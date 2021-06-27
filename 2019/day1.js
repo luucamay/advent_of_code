@@ -10,4 +10,4 @@ lines.forEach((line) => {
   iterativeSum += getFuel(mass)
 })
 
-console.log(iterative_sum);
+console.log(iterativeSum);
